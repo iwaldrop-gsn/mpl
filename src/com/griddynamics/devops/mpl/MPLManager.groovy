@@ -26,9 +26,10 @@ package com.griddynamics.devops.mpl
 import com.cloudbees.groovy.cps.NonCPS
 
 /**
- * Object to help with MPL pipelines configuration & poststeps
+ * Object to help with MPL pipelines configuration & post-steps
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
+ * @author Ian Waldrop <iwaldrop@gsngames.com>
  */
 @Singleton
 class MPLManager implements Serializable {
@@ -48,11 +49,8 @@ class MPLManager implements Serializable {
 	/** Post-steps errors store */
 	private Map postStepsErrors = [:]
 
-	/** Flag to enable enforcement of the modules on project side */
-	private Boolean enforced = false
-
 	/** List of modules available on project side while enforcement */
-	private List enforcedModules = []
+	private List enforcedModules
 
 	/**
 	 * Initialization for the MPL manager
@@ -66,16 +64,19 @@ class MPLManager implements Serializable {
 		this
 	}
 
-	def getConfig() { config }
+	/**
+	 * Get configuration
+	 *
+	 * @return Configuration map
+	 */
+	Map getConfig() { config }
 
 	/**
 	 * Get agent label from the specific config option
 	 *
 	 * @return Agent label taken from the agent_label config property
 	 */
-	String getAgentLabel() {
-		config.agent_label
-	}
+	String getAgentLabel() { config.agent_label }
 
 	/**
 	 * Get a module configuration
@@ -86,7 +87,7 @@ class MPLManager implements Serializable {
 	 * @return Overridden configuration for the specified module
 	 */
 	MPLConfig moduleConfig(String name) {
-		MPLConfig.create(config.modules ? Helper.mergeMaps(config.subMap(config.keySet() - 'modules'), (config.modules[name] ?: [:])) : config)
+		MPLConfig.create(config.modules ? Helper.mergeMaps(config.subMap(config.keySet() - 'modules'), (config.modules[name] ?: [:]) as Map) : config)
 	}
 
 	/**
@@ -112,11 +113,11 @@ class MPLManager implements Serializable {
 	/**
 	 * Add post step to the array with specific name
 	 *
-	 * @param name Poststeps list name
-	 *              Usual poststeps list names:
-	 *                * "always"  - used to run poststeps anyway (ex: decomission of the dynamic environment)
-	 *                * "success" - poststeps to run on pipeline success (ex: email with congratulations or ask for promotion)
-	 *                * "failure" - poststeps to run on pipeline failure (ex: pipeline failed message)
+	 * @param name Post-steps list name
+	 *              Usual post-steps list names:
+	 *                * "always"  - used to run post-steps anyway (ex: decommission of the dynamic environment)
+	 *                * "success" - post-steps to run on pipeline success (ex: email with congratulations or ask for promotion)
+	 *                * "failure" - post-steps to run on pipeline failure (ex: pipeline failed message)
 	 * @param body Definition of steps to include in the list
 	 */
 	void postStep(String name, Closure body) {
@@ -129,7 +130,7 @@ class MPLManager implements Serializable {
 	/**
 	 * Add module post step to the list
 	 *
-	 * @param name Module poststeps list name (default: current "module(id)")
+	 * @param name Module post-steps list name (default: current "module(id)")
 	 * @param body Definition of steps to include in the list
 	 */
 	void modulePostStep(String name, Closure body) {
@@ -187,7 +188,7 @@ class MPLManager implements Serializable {
 	/**
 	 * Post steps could end with errors - and it will be stored to get it later
 	 *
-	 * @param name Poststeps list name
+	 * @param name Post-steps list name
 	 * @param module Name of the module
 	 * @param exception Exception object with error
 	 */
@@ -197,9 +198,9 @@ class MPLManager implements Serializable {
 	}
 
 	/**
-	 * Get the list of errors become while poststeps execution
+	 * Get the list of errors become while post-steps execution
 	 *
-	 * @param name Poststeps list name (default: current "module(id)")
+	 * @param name Post-steps list name (default: current "module(id)")
 	 *
 	 * @return List of errors
 	 */
@@ -233,12 +234,11 @@ class MPLManager implements Serializable {
 	/**
 	 * Enforce modules override on project side - could be set just once while execution
 	 *
-	 * @param modules List of modules available to be overriden on the project level
+	 * @param modules List of modules available to be overridden on the project level
 	 */
 	void enforce(List modules) {
-		if (enforced) return // Execute function only once while initialization
-		enforced = true
-		enforcedModules = modules
+		// Execute function only once while initialization
+		if (!enforcedModules) enforcedModules = modules
 	}
 
 	/**
@@ -248,7 +248,7 @@ class MPLManager implements Serializable {
 	 * @return Boolean module in the list, will always return true if not enforced
 	 */
 	Boolean checkEnforcedModule(String module) {
-		!enforced ?: enforcedModules.contains(module)
+		enforcedModules?.contains(module)
 	}
 
 	/**
@@ -277,7 +277,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return String the created block id
 	 */
-	String pushActiveModule(String path) {
+	static String pushActiveModule(String path) {
 		return Helper.startMPLBlock(path)
 	}
 
@@ -286,7 +286,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @param start_id start node ID to find in the current execution
 	 */
-	void popActiveModule(String start_id) {
+	static void popActiveModule(String start_id) {
 		Helper.endMPLBlock(start_id)
 	}
 
@@ -303,8 +303,8 @@ class MPLManager implements Serializable {
 	 *   ...
 	 */
 	@NonCPS
-	private void readObject(java.io.ObjectInputStream inp) throws IOException, ClassNotFoundException {
+	private void readObject(ObjectInputStream inp) throws IOException, ClassNotFoundException {
 		inp.defaultReadObject()
-		inst = this
+		instance = this
 	}
 }

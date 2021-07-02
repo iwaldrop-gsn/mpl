@@ -3,5 +3,5 @@
  */
 
 git url: CFG.'git.url',
-    branch: CFG.'git.branch',
-    credentialsId: CFG.'git.credentials'
+	branch: CFG.'git.branch',
+	credentialsId: CFG.'git.credentials'

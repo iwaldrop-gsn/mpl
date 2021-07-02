@@ -311,7 +311,9 @@ abstract class Helper {
 
 	/**
 	 * Provides a mechanism for collecting configuration from a closure with a map as delegate
-	 * @param closure
+	 * @author Ian Waldrop <iwaldrop@gsngames.com>
+	 *
+	 * @param closure used by caller to define configuration
 	 *
 	 * @return a Map of the values configured in the supplied Closure
 	 */
@@ -319,7 +321,9 @@ abstract class Helper {
 
 	/**
 	 * Provides a mechanism for collecting configuration from a closure with a map as delegate
-	 * @param closure
+	 * @author Ian Waldrop <iwaldrop@gsngames.com>
+	 *
+	 * @param closure used by caller to amend an existing configuration
 	 *
 	 * @return a Map of the values configured in the supplied Closure
 	 */

@@ -37,7 +37,7 @@ class MPLConfig implements Map, Serializable {
 	/**
 	 * Creating new MPLConfig
 	 *
-	 * It's impossible to create a new object of MPLConfig using consructor
+	 * It's impossible to create a new object of MPLConfig using constructor
 	 * because it's throwing com.cloudbees.groovy.cps.impl.CpsCallableInvocation
 	 * since constructors can't be CPS-transformed
 	 *
@@ -114,15 +114,11 @@ class MPLConfig implements Map, Serializable {
 
 		def value = this.@config
 		for (def key in key_list) {
-			if (value in Map)
-				value = value[key]
-			else if (value in List && key.isInteger() && key.toInteger() >= 0)
-				value = value[key.toInteger()]
-			else
-				value = null
+			if (value in Map) value = value[key]
+			else if (value in List && key.isInteger() && key.toInteger() >= 0) value = value[key.toInteger()]
+			else value = null
 
-			if (value == null)
-				break
+			if (value == null) break
 		}
 		return Helper.cloneValue(value)
 	}
@@ -140,7 +136,7 @@ class MPLConfig implements Map, Serializable {
 	 *
 	 * Not existing key will be created as Map (even if number key is provided)
 	 * Exception could be thrown if:
-	 *  - you trying to set sublevel of the existing key which is not the required type:
+	 *  - you trying to set sub-level of the existing key which is not the required type:
 	 *    + List requires positive integer: string keys will cause exception
 	 *    + Non-container variables (of course)
 	 *
@@ -156,16 +152,12 @@ class MPLConfig implements Map, Serializable {
 			parent = value
 
 			if (parent in List) {
-				if (key.isInteger() && key.toInteger() >= 0)
-					key = key.toInteger()
-				else
-					throw new MPLException("Invalid config key path '${key_list[i] = '<' + key_list[i] + '>'; key_list.join('.')}': marked key of the list '${key_list[i - 1]}' is not a positive integer")
+				if (key.isInteger() && key.toInteger() >= 0) key = key.toInteger()
+				else throw new MPLException("Invalid config key path '${key_list[i] = '<' + key_list[i] + '>'; key_list.join('.')}': marked key of the list '${key_list[i - 1]}' is not a positive integer")
 			}
 
-			if (parent in Map || parent in List)
-				value = parent[key]
-			else
-				throw new MPLException("Invalid config key path '${key_list[i - 1] = '<' + key_list[i - 1] + '>'; key_list.join('.')}': marked key value type '${parent?.getClass()}' is not suitable to set the nested variable")
+			if (parent in Map || parent in List) value = parent[key]
+			else throw new MPLException("Invalid config key path '${key_list[i - 1] = '<' + key_list[i - 1] + '>'; key_list.join('.')}': marked key value type '${parent?.getClass()}' is not suitable to set the nested variable")
 
 			if (value == null) {
 				parent[key] = [:]
