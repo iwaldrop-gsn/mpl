@@ -103,7 +103,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @param cfg Map or MPLConfig
 	 */
-	def configMerge(cfg) {
+	def configMerge(Map cfg) {
 		config = Helper.mergeMaps(config, cfg)
 	}
 
@@ -234,7 +234,7 @@ class MPLManager implements Serializable {
 	 * @param modules List of modules available to be overriden on the project level
 	 */
 	void enforce(List modules) {
-		if (enforced == true) return // Execute function only once while initialization
+		if (enforced) return // Execute function only once while initialization
 		enforced = true
 		enforcedModules = modules
 	}
