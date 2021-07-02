@@ -150,9 +150,13 @@ class MPLManager implements Serializable {
 	 */
 	void postStepsRun(String name = 'always') {
 		if (postSteps[name]) {
+			final configuration = config.subMap(config.keySet() - 'modules')
 			for (def i = postSteps[name].size() - 1; i >= 0; i--) {
 				try {
-					postSteps[name][i].body()
+					Closure body = postSteps[name][i].body
+					body.delegate = configuration
+					body.resolveStrategy = Closure.DELEGATE_FIRST
+					body.call()
 				}
 				catch (ex) {
 					def module_name = "${postSteps[name][i].block?.module}(${postSteps[name][i].block?.id})"
