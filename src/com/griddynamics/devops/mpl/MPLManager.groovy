@@ -25,10 +25,6 @@ package com.griddynamics.devops.mpl
 
 import com.cloudbees.groovy.cps.NonCPS
 
-import com.griddynamics.devops.mpl.MPLException
-import com.griddynamics.devops.mpl.MPLConfig
-import com.griddynamics.devops.mpl.Helper
-
 /**
  * Object to help with MPL pipelines configuration & poststeps
  *
@@ -40,7 +36,7 @@ class MPLManager implements Serializable {
 	 */
 	private static inst = null
 
-	public static getInstance() {
+	static getInstance() {
 		if (!inst)
 			inst = new MPLManager()
 		return inst
@@ -74,7 +70,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return MPLManager singleton object
 	 */
-	public init(pipelineConfig = null) {
+	def init(pipelineConfig = null) {
 		if (pipelineConfig in Map) this.config = pipelineConfig
 		this
 	}
@@ -84,7 +80,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return Agent label taken from the agent_label config property
 	 */
-	public String getAgentLabel() {
+	String getAgentLabel() {
 		config.agent_label
 	}
 
@@ -96,7 +92,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return Overriden configuration for the specified module
 	 */
-	public MPLConfig moduleConfig(String name) {
+	MPLConfig moduleConfig(String name) {
 		MPLConfig.create(config.modules ? Helper.mergeMaps(config.subMap(config.keySet() - 'modules'), (config.modules[name] ?: [:])) : config)
 	}
 
@@ -107,7 +103,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return Boolean about existing the module
 	 */
-	public Boolean moduleEnabled(String name) {
+	Boolean moduleEnabled(String name) {
 		config.modules ? config.modules[name] != null : false
 	}
 
@@ -116,7 +112,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @param cfg Map or MPLConfig
 	 */
-	public configMerge(cfg) {
+	def configMerge(cfg) {
 		config = Helper.mergeMaps(config, cfg)
 	}
 
@@ -130,7 +126,7 @@ class MPLManager implements Serializable {
 	 *                * "failure" - poststeps to run on pipeline failure (ex: pipeline failed message)
 	 * @param body Definition of steps to include in the list
 	 */
-	public void postStep(String name, Closure body) {
+	void postStep(String name, Closure body) {
 		// TODO: Parallel execution - could be dangerous
 		if (!postSteps[name]) postSteps[name] = []
 		def blocks = Helper.getMPLBlocks()
@@ -143,7 +139,7 @@ class MPLManager implements Serializable {
 	 * @param name Module poststeps list name (default: current "module(id)")
 	 * @param body Definition of steps to include in the list
 	 */
-	public void modulePostStep(String name, Closure body) {
+	void modulePostStep(String name, Closure body) {
 		if (name == null) {
 			def block = Helper.getMPLBlocks().first()
 			name = "${block.module}(${block.id})"
@@ -156,16 +152,16 @@ class MPLManager implements Serializable {
 	/**
 	 * Execute post steps filled by modules in reverse order
 	 *
-	 * @param name Poststeps list name
+	 * @param name post steps list name
 	 */
-	public void postStepsRun(String name = 'always') {
+	void postStepsRun(String name = 'always') {
 		if (postSteps[name]) {
 			for (def i = postSteps[name].size() - 1; i >= 0; i--) {
 				try {
 					postSteps[name][i].body()
 				}
 				catch (ex) {
-					def module_name = "${modulePostSteps[name][i].block?.module}(${modulePostSteps[name][i].block?.id})"
+					def module_name = "${postSteps[name][i].block?.module}(${postSteps[name][i].block?.id})"
 					postStepError(name, module_name, ex)
 				}
 			}
@@ -175,9 +171,9 @@ class MPLManager implements Serializable {
 	/**
 	 * Execute module post steps filled by module in reverse order
 	 *
-	 * @param name Module poststeps list name (default: current "module(id)")
+	 * @param name Module post steps list name (default: current "module(id)")
 	 */
-	public void modulePostStepsRun(String name = null) {
+	void modulePostStepsRun(String name = null) {
 		if (name == null) {
 			def block = Helper.getMPLBlocks().first()
 			name = "${block.module}(${block.id})"
@@ -202,7 +198,7 @@ class MPLManager implements Serializable {
 	 * @param module Name of the module
 	 * @param exception Exception object with error
 	 */
-	public void postStepError(String name, String module, Exception exception) {
+	void postStepError(String name, String module, Exception exception) {
 		if (!postStepsErrors[name]) postStepsErrors[name] = []
 		postStepsErrors[name] << [module: module, error: exception]
 	}
@@ -214,7 +210,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return List of errors
 	 */
-	public List getPostStepsErrors(String name = null) {
+	List getPostStepsErrors(String name = null) {
 		if (name == null) {
 			def block = Helper.getMPLBlocks().first()
 			name = "${block.module}(${block.id})"
@@ -228,7 +224,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return List of paths
 	 */
-	public List getModulesLoadPaths() {
+	List getModulesLoadPaths() {
 		modulesLoadPaths.reverse()
 	}
 
@@ -237,7 +233,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @param path string with resource path to the parent folder of modules
 	 */
-	public void addModulesLoadPath(String path) {
+	void addModulesLoadPath(String path) {
 		modulesLoadPaths += path
 	}
 
@@ -246,7 +242,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @param modules List of modules available to be overriden on the project level
 	 */
-	public void enforce(List modules) {
+	void enforce(List modules) {
 		if (enforced == true) return // Execute function only once while initialization
 		enforced = true
 		enforcedModules = modules
@@ -258,7 +254,7 @@ class MPLManager implements Serializable {
 	 * @param module Module name
 	 * @return Boolean module in the list, will always return true if not enforced
 	 */
-	public Boolean checkEnforcedModule(String module) {
+	Boolean checkEnforcedModule(String module) {
 		!enforced ?: enforcedModules.contains(module)
 	}
 
@@ -274,7 +270,7 @@ class MPLManager implements Serializable {
 	 */
 	@Deprecated
 	// https://github.com/griddynamics/mpl/issues/54
-	public List getActiveModules() {
+	List getActiveModules() {
 		def blocks = Helper.getMPLBlocks()
 		for (def i = 0; i < blocks.size(); i++)
 			blocks[i] = blocks[i].module
@@ -288,7 +284,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return String the created block id
 	 */
-	public String pushActiveModule(String path) {
+	String pushActiveModule(String path) {
 		return Helper.startMPLBlock(path)
 	}
 
@@ -297,7 +293,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @param start_id start node ID to find in the current execution
 	 */
-	public void popActiveModule(String start_id) {
+	void popActiveModule(String start_id) {
 		Helper.endMPLBlock(start_id)
 	}
 

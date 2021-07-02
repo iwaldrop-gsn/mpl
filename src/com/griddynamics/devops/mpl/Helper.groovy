@@ -41,9 +41,6 @@ import hudson.model.Run
 import hudson.FilePath
 import jenkins.model.Jenkins
 
-import com.griddynamics.devops.mpl.MPLManager
-import com.griddynamics.devops.mpl.MPLException
-
 /**
  * Manages all helpers to interact with low-level groovy
  *

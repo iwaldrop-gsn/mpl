@@ -24,15 +24,13 @@
 package com.griddynamics.devops.mpl
 
 import com.cloudbees.groovy.cps.NonCPS
-import com.griddynamics.devops.mpl.Helper
-import com.griddynamics.devops.mpl.MPLException
 
 /**
  * Configuration object to provide the config interface
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
  */
-public class MPLConfig implements Map, Serializable {
+class MPLConfig implements Map, Serializable {
 	/** Configuration Map or List storage */
 	private Map config = [:]
 
@@ -48,7 +46,7 @@ public class MPLConfig implements Map, Serializable {
 	 * @return MPLConfig object
 	 */
 	@NonCPS
-	static public MPLConfig create(cfg = [:]) {
+	static MPLConfig create(cfg = [:]) {
 		new MPLConfig(cfg)
 	}
 
@@ -58,7 +56,7 @@ public class MPLConfig implements Map, Serializable {
 	 * @return MPLConfig object clone
 	 */
 	@NonCPS
-	public MPLConfig clone() {
+	MPLConfig clone() {
 		new MPLConfig(this.@config)
 	}
 
@@ -76,26 +74,26 @@ public class MPLConfig implements Map, Serializable {
 	 * CFG is just a config place.
 	 * The module should know the key it's trying to use, not to process everything.
 	 */
-	public Object remove(Object key) {}
+	Object remove(Object key) {}
 
-	public Collection values() {}
+	Collection values() {}
 
-	public Set keySet() {}
+	Set keySet() {}
 
-	public void clear() {}
+	void clear() {}
 
-	public boolean containsKey(Object key) {}
+	boolean containsKey(Object key) {}
 
-	public boolean containsValue(Object val) {}
+	boolean containsValue(Object val) {}
 
-	public void putAll(Map map) {}
+	void putAll(Map map) {}
 
-	public int size() { this.@config.size() }
+	int size() { this.@config.size() }
 
-	public boolean isEmpty() { this.@config.isEmpty() }
+	boolean isEmpty() { this.@config.isEmpty() }
 	/* Intentionally disabled iteration - MPLConfig is not a usual Map */
 
-	public Set entrySet() { Helper.configEntrySet(this.@config) }
+	Set entrySet() { Helper.configEntrySet(this.@config) }
 
 	/**
 	 * Get a value copy of the provided config key path
@@ -111,7 +109,7 @@ public class MPLConfig implements Map, Serializable {
 	 * @param key_path - path to the desired config value separated by dot
 	 * @return value of the key path or null if not found
 	 */
-	public Object get(Object key_path) {
+	Object get(Object key_path) {
 		def key_list = key_path.tokenize(".")
 
 		def value = this.@config
@@ -148,7 +146,7 @@ public class MPLConfig implements Map, Serializable {
 	 *
 	 * @param key_path - path to the desired config value separated by dot
 	 */
-	public Object put(Object key_path, Object val) {
+	Object put(Object key_path, Object val) {
 		def key_list = key_path.tokenize(".")
 
 		def key, parent
@@ -183,7 +181,7 @@ public class MPLConfig implements Map, Serializable {
 	 *
 	 * @return String "MPLConfig(<config dump>)"
 	 */
-	public String toString() {
+	String toString() {
 		return "MPLConfig(${this.@config.dump()})"
 	}
 }
