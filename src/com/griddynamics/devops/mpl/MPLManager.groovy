@@ -150,7 +150,7 @@ class MPLManager implements Serializable {
 	 */
 	void postStepsRun(String name = 'always') {
 		if (postSteps[name]) {
-			final configuration = config.subMap(config.keySet() - 'modules')
+			final configuration = [CFG: config.subMap(config.keySet() - 'modules')]
 			for (def i = postSteps[name].size() - 1; i >= 0; i--) {
 				try {
 					Closure body = postSteps[name][i].body
