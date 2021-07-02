@@ -32,7 +32,17 @@ import com.griddynamics.devops.mpl.MPLManager
  */
 def call(String name) {
 	MPLManager.instance.postStepsRun(name)
-	def errors = MPLManager.instance.getPostStepsErrors(name)
-	for (int e in errors)
-		println "PostStep '${name}' error: ${e.module}: ${e.error}"
+	MPLManager.instance.getPostStepsErrors(name)
+		.each { println "PostStep '${name}' error: ${it.module}: ${it.error}" }
+}
+
+/**
+ * A helper to run the default set to post steps for the given state of the build; e.g. 'always' is always run,
+ * then the `currentBuild.result` value is used to call either `success`, `unstable`, or `failure` steps.
+ *
+ * @author Ian Waldrop <iwaldrop@gsngames.com>
+ */
+def call() {
+	call('always')
+	call(currentBuild.result.toLowerCase())
 }
