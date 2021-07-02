@@ -27,9 +27,9 @@ import com.griddynamics.devops.mpl.MPLManager
  * Determine is module enabled in the pipeline or not
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
- * @param name  Module name (stage name by default)
- * @return  Boolean module enabled or not
+ * @param name Module name (stage name by default)
+ * @return Boolean module enabled or not
  */
 def call(String name = env.STAGE_NAME) {
-  MPLManager.instance.moduleEnabled(name)
+	MPLManager.instance.moduleEnabled(name)
 }

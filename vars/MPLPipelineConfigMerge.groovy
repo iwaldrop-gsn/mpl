@@ -3,5 +3,5 @@
 import com.griddynamics.devops.mpl.MPLManager
 
 def call(cfg) {
-  MPLManager.instance.configMerge(cfg)
+	MPLManager.instance.configMerge(cfg)
 }

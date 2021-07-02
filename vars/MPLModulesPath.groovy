@@ -27,8 +27,8 @@ import com.griddynamics.devops.mpl.MPLManager
  * Easy way to set additional path with library modules
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
- * @param path  path to the library modules
+ * @param path path to the library modules
  */
 def call(String path) {
-  MPLManager.instance.addModulesLoadPath(path)
+	MPLManager.instance.addModulesLoadPath(path)
 }
