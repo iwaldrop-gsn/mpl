@@ -155,7 +155,7 @@ class MPLManager implements Serializable {
 					postSteps[name][i].body()
 				}
 				catch (ex) {
-					def module_name = "${modulePostSteps[name][i].block?.module}(${modulePostSteps[name][i].block?.id})"
+					def module_name = "${postSteps[name][i].block?.module}(${postSteps[name][i].block?.id})"
 					postStepError(name, module_name, ex)
 				}
 			}
