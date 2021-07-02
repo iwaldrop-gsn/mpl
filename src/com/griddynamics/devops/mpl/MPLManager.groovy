@@ -30,17 +30,8 @@ import com.cloudbees.groovy.cps.NonCPS
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
  */
+@Singleton
 class MPLManager implements Serializable {
-	/**
-	 * Simple realization of a singleton
-	 */
-	private static inst = null
-
-	static getInstance() {
-		if (!inst)
-			inst = new MPLManager()
-		return inst
-	}
 
 	/** List of paths which is used to find modules in libraries */
 	private List modulesLoadPaths = ['com/griddynamics/devops/mpl']
