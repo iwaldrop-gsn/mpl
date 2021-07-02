@@ -43,6 +43,6 @@ def call(String name) {
  * @author Ian Waldrop <iwaldrop@gsngames.com>
  */
 def call() {
-	call('always')
 	call(currentBuild.result.toLowerCase())
+	call('always')
 }
