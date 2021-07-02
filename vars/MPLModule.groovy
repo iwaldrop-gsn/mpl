@@ -42,10 +42,9 @@ import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
  *
  * @return MPLConfig object was available in the module as `OUT`
  */
-def call(String name = env.STAGE_NAME, cfg = null) {
-	if (cfg == null) cfg = MPLManager.instance.moduleConfig(name)
-	else if (cfg instanceof MPLConfig) cfg = cfg.clone()
-	else cfg = MPLConfig.create(cfg)
+def call(String name = env.STAGE_NAME, Map cfg = null) {
+	if (cfg instanceof MPLConfig) cfg = cfg.clone()
+	else cfg = Helper.mergeMaps(MPLManager.instance.moduleConfig(name), cfg)
 
 	// Trace of the running modules to find loops
 	// Also to make ability to use lib module from overridden one
@@ -75,12 +74,13 @@ def call(String name = env.STAGE_NAME, cfg = null) {
 	if (!module_src)
 		throw new MPLModuleException("Unable to find not active module to execute: ${(active_modules).join(' --> ')} -X> ${module_path}")
 
-	// OUT will be return to caller
-	def out = MPLConfig.create()
+	// OUT will be return to caller as MPLConfig
+	def out = [:]
 
 	String block_id = MPLManager.instance.pushActiveModule(module_path)
 	try {
 		Helper.runModule(module_src, module_path, [CFG: cfg, OUT: out])
+		if (out.any()) MPLManager.instance.configMerge(out)
 	}
 	catch (FlowInterruptedException ex) {
 		// The exception is used by Jenkins to abort a running build and consequently
@@ -105,5 +105,5 @@ def call(String name = env.STAGE_NAME, cfg = null) {
 		MPLManager.instance.popActiveModule(block_id)
 	}
 
-	return out
+	return MPLConfig.create(out)
 }
