@@ -66,6 +66,8 @@ class MPLManager implements Serializable {
 		this
 	}
 
+	def getConfig() { config }
+
 	/**
 	 * Get agent label from the specific config option
 	 *
