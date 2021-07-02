@@ -43,6 +43,7 @@ import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
  * @return MPLConfig object was available in the module as `OUT`
  */
 def call(String name = env.STAGE_NAME, Map cfg = null) {
+	if (cfg == null) cfg = MPLManager.instance.moduleConfig(name)
 	if (cfg instanceof MPLConfig) cfg = cfg.clone()
 	else cfg = Helper.mergeMaps(MPLManager.instance.moduleConfig(name), cfg)
 
