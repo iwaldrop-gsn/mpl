@@ -69,7 +69,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @return Configuration map
 	 */
-	Map getConfig() { config }
+	Map getGlobalConfig() { config.subMap(config.keySet() - 'modules') }
 
 	/**
 	 * Get agent label from the specific config option
@@ -87,7 +87,7 @@ class MPLManager implements Serializable {
 	 * @return Overridden configuration for the specified module
 	 */
 	MPLConfig moduleConfig(String name) {
-		MPLConfig.create(config.modules ? Helper.mergeMaps(config.subMap(config.keySet() - 'modules'), (config.modules[name] ?: [:]) as Map) : config)
+		MPLConfig.create(config.modules ? Helper.mergeMaps(globalConfig, (config.modules[name] ?: [:]) as Map) : config)
 	}
 
 	/**
@@ -150,7 +150,7 @@ class MPLManager implements Serializable {
 	 */
 	void postStepsRun(String name = 'always') {
 		if (postSteps[name]) {
-			final configuration = [CFG: config.subMap(config.keySet() - 'modules')]
+			final configuration = [CFG: globalConfig]
 			for (def i = postSteps[name].size() - 1; i >= 0; i--) {
 				try {
 					Closure body = postSteps[name][i].body
