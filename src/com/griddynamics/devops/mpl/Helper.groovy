@@ -312,11 +312,18 @@ abstract class Helper {
 	/**
 	 * Provides a mechanism for collecting configuration from a closure with a map as delegate
 	 * @param closure
-	 * @return
+	 *
+	 * @return a Map of the values configured in the supplied Closure
 	 */
-	static Map getOptions(Closure closure) { amendOptions([:], closure) }
+	static Map configFromClosure(Closure closure) { amendConfigFromClosure([:], closure) }
 
-	static Map amendOptions(Map options, Closure closure) {
+	/**
+	 * Provides a mechanism for collecting configuration from a closure with a map as delegate
+	 * @param closure
+	 *
+	 * @return a Map of the values configured in the supplied Closure
+	 */
+	static Map amendConfigFromClosure(Map options, Closure closure) {
 		closure.delegate = options
 		closure.resolveStrategy = Closure.DELEGATE_FIRST
 		closure.call()
