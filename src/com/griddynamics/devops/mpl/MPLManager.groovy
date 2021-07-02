@@ -39,13 +39,13 @@ class MPLManager implements Serializable {
 	/** Pipeline configuration */
 	private Map config = [:]
 
-	/** Poststep lists container */
+	/** Post-step lists container */
 	private Map postSteps = [:]
 
-	/** Module poststep lists container */
+	/** Module post-step lists container */
 	private Map modulePostSteps = [:]
 
-	/** Poststeps errors store */
+	/** Post-steps errors store */
 	private Map postStepsErrors = [:]
 
 	/** Flag to enable enforcement of the modules on project side */
@@ -77,11 +77,11 @@ class MPLManager implements Serializable {
 
 	/**
 	 * Get a module configuration
-	 * Module config is a pipeline config without modules section and with overrided values from the module itself.
+	 * Module config is a pipeline config without modules section and with overridden values from the module itself.
 	 *
 	 * @param name module name
 	 *
-	 * @return Overriden configuration for the specified module
+	 * @return Overridden configuration for the specified module
 	 */
 	MPLConfig moduleConfig(String name) {
 		MPLConfig.create(config.modules ? Helper.mergeMaps(config.subMap(config.keySet() - 'modules'), (config.modules[name] ?: [:])) : config)
