@@ -1,9 +1,12 @@
 import com.griddynamics.devops.mpl.Helper
 
 def call(String name, Closure closure) {
-	call(name, Helper.configFromClosure(closure))
+	return call(name, Helper.configFromClosure(closure))
 }
 
 def call(String name, Map config = null) {
-	stage (name) { MPLModule(name, config) }
+	def out = [:]
+	stage (name) { out = MPLModule(name, config) }
+	if (out.any()) echo "Module $name output merged to global config: ${MPLGlobalConfig()}"
+	return out
 }
