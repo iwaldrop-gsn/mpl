@@ -5,7 +5,5 @@ def call(String name, Closure closure) {
 }
 
 def call(String name, Map config = null) {
-	def out = [:]
-	stage (name) { out = MPLModule(name, config) }
-	return out
+	stage (name) { MPLModule(name, config) }
 }
