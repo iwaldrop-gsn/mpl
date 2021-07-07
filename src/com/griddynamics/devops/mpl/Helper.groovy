@@ -119,16 +119,14 @@ abstract class Helper {
 	 */
 	@NonCPS
 	static cloneValue(value) {
-		def out
-
-		if (value in Map)
-			out = value.collectEntries { k, v -> [k, cloneValue(v)] }
-		else if (value in List)
-			out = value.collect { cloneValue(it) }
-		else
-			out = value
-
-		return out
+		try {
+			if (value in Map) return value.collectEntries { k, v -> [k, cloneValue(v)] }
+			if (value in List) return value.collect { cloneValue(it) }
+			return value
+		}
+		catch (e) {
+			echo "failed to clone value: $value. reason: $e.message"
+		}
 	}
 
 	/**
