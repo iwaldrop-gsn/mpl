@@ -119,14 +119,16 @@ abstract class Helper {
 	 */
 	@NonCPS
 	static cloneValue(value) {
-		try {
-			if (value in Map) return value.collectEntries { k, v -> [k, cloneValue(v)] }
-			if (value in List) return value.collect { cloneValue(it) }
-			return value
-		}
-		catch (e) {
-			echo "failed to clone value: $value. reason: $e.message"
-		}
+
+		final bos = new ByteArrayOutputStream()
+		final oos = new ObjectOutputStream(bos); oos.writeObject(value); oos.flush()
+		final bin = new ByteArrayInputStream(bos.toByteArray())
+		final ois = new ObjectInputStream(bin)
+		return ois.readObject()
+
+//		if (value in Map) return value.collectEntries { k, v -> [k, cloneValue(v)] }
+//		if (value in List) return value.collect { cloneValue(it) }
+//		return value
 	}
 
 	/**
