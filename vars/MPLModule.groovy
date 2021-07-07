@@ -81,10 +81,7 @@ def call(String name = env.STAGE_NAME, Map cfg = null) {
 	String block_id = MPLManager.instance.pushActiveModule(module_path)
 	try {
 		Helper.runModule(module_src, module_path, [CFG: cfg, OUT: out])
-		if (out.any()) {
-			MPLManager.instance.configMerge(out)
-			echo "merged module output to global: $out -> ${MPLConfig()}"
-		}
+		if (out.any()) MPLManager.instance.configMerge(out)
 	}
 	catch (FlowInterruptedException ex) {
 		// The exception is used by Jenkins to abort a running build and consequently
