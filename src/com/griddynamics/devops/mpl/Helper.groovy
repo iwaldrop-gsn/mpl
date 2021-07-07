@@ -110,26 +110,19 @@ abstract class Helper {
 		base
 	}
 
-	/**
-	 * Deep copy of the Map or List
-	 *
-	 * @param value value to deep copy
-	 *
-	 * @return value type without any relation to the original value
-	 */
-	@NonCPS
-	static cloneValue(value) {
-
-		final bos = new ByteArrayOutputStream()
-		final oos = new ObjectOutputStream(bos); oos.writeObject(value); oos.flush()
-		final bin = new ByteArrayInputStream(bos.toByteArray())
-		final ois = new ObjectInputStream(bin)
-		return ois.readObject()
-
+//	/**
+//	 * Deep copy of the Map or List
+//	 *
+//	 * @param value value to deep copy
+//	 *
+//	 * @return value type without any relation to the original value
+//	 */
+//	@NonCPS
+//	static cloneValue(value) {
 //		if (value in Map) return value.collectEntries { k, v -> [k, cloneValue(v)] }
 //		if (value in List) return value.collect { cloneValue(it) }
 //		return value
-	}
+//	}
 
 	/**
 	 * Silently check the workspace file existence
@@ -295,18 +288,6 @@ abstract class Helper {
 				return s.getLineNumber()
 		}
 		return null
-	}
-
-	/**
-	 * Special function to return exception if someone tries to use MPLConfig in a wrong way
-	 * Basically used just to be overridden on the unit tests side.
-	 *
-	 * @param config current MPLConfig configuration
-	 *
-	 * @return Set of entries - but only when overridden by unit tests
-	 */
-	static Set configEntrySet(Map config) {
-		throw new MPLException('Forbidden to iterate over MPLConfig, please use some specific key with a good self-describable name')
 	}
 
 	/**

@@ -86,8 +86,8 @@ class MPLManager implements Serializable {
 	 *
 	 * @return Overridden configuration for the specified module
 	 */
-	MPLConfig moduleConfig(String name) {
-		MPLConfig.create(config.modules ? Helper.mergeMaps(globalConfig, (config.modules[name] ?: [:]) as Map) : config)
+	Map moduleConfig(String name) {
+		config.modules ? Helper.mergeMaps(globalConfig, (config.modules[name] ?: [:]) as Map) : config
 	}
 
 	/**
@@ -104,7 +104,7 @@ class MPLManager implements Serializable {
 	/**
 	 * Deep merge of the pipeline config with the provided config
 	 *
-	 * @param cfg Map or MPLConfig
+	 * @param cfg Map
 	 */
 	def configMerge(Map cfg) {
 		config = Helper.mergeMaps(config, cfg)

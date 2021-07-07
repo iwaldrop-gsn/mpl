@@ -24,7 +24,6 @@
 import com.griddynamics.devops.mpl.Helper
 import com.griddynamics.devops.mpl.MPLManager
 import com.griddynamics.devops.mpl.MPLModuleException
-import com.griddynamics.devops.mpl.MPLConfig
 
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 
@@ -40,11 +39,10 @@ import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
  * @param name used to determine the module name, by default it's current stage name (ex. "Maven Build")
  * @param cfg module configuration to override. Will update the common module configuration
  *
- * @return MPLConfig object was available in the module as `OUT`
+ * @return Map object was available in the module as `OUT`
  */
 def call(String name = env.STAGE_NAME, Map cfg = null) {
 	if (cfg == null) cfg = MPLManager.instance.moduleConfig(name)
-	if (cfg instanceof MPLConfig) cfg = cfg.clone()
 	else cfg = Helper.mergeMaps(MPLManager.instance.moduleConfig(name), cfg)
 
 	// Trace of the running modules to find loops
@@ -75,9 +73,9 @@ def call(String name = env.STAGE_NAME, Map cfg = null) {
 	if (!module_src)
 		throw new MPLModuleException("Unable to find not active module to execute: ${(active_modules).join(' --> ')} -X> ${module_path}")
 
+	final out = [:]
 	String block_id = MPLManager.instance.pushActiveModule(module_path)
 	try {
-		final out = [:]
 		Helper.runModule(module_src, module_path, [CFG: cfg, OUT: out])
 		if (out.any()) MPLManager.instance.configMerge(out)
 	}
@@ -103,4 +101,6 @@ def call(String name = env.STAGE_NAME, Map cfg = null) {
 		}
 		MPLManager.instance.popActiveModule(block_id)
 	}
+
+	return out
 }
