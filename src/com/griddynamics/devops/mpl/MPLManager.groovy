@@ -148,21 +148,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @param name post steps list name
 	 */
-	void postStepsRun(String name = 'always') {
-		final configuration = [CFG: globalConfig]
-		postSteps[name]?.reverse()?.each {
-			try {
-				Closure body = it.body
-				body.delegate = configuration
-				body.resolveStrategy = Closure.DELEGATE_FIRST
-				body.call()
-			}
-			catch (ex) {
-				def module_name = "${it.block?.module}(${it.block?.id})"
-				postStepError(name, module_name, ex)
-			}
-		}
-	}
+	void postStepsRun(String name) { executePostSteps(postSteps[name]) }
 
 	/**
 	 * Execute module post steps filled by module in reverse order
@@ -174,9 +160,18 @@ class MPLManager implements Serializable {
 			def block = Helper.getMPLBlocks().first()
 			name = "${block.module}(${block.id})"
 		}
+		executePostSteps(modulePostSteps[name])
+	}
 
-		modulePostSteps[name]?.reverse()?.each {
-			try { it.body() }
+	private void executePostSteps(steps) {
+		final configuration = [CFG: globalConfig]
+		steps?.reverse()?.each {
+			try {
+				Closure body = it.body
+				body.delegate = configuration
+				body.resolveStrategy = Closure.DELEGATE_FIRST
+				body.call()
+			}
 			catch (ex) {
 				def module_name = "${it.block?.module}(${it.block?.id})"
 				postStepError(name, module_name, ex)
