@@ -140,7 +140,8 @@ class MPLManager implements Serializable {
 		}
 		// TODO: Parallel execution - could be dangerous
 		if (!modulePostSteps[name]) modulePostSteps[name] = []
-		modulePostSteps[name] << [block: Helper.getMPLBlocks().first(), body: body]
+		final block = Helper.getMPLBlocks()?.first() ?: [module: name, id: modulePostSteps[name].size()]
+		modulePostSteps[name] << [block: block, body: body]
 	}
 
 	/**
@@ -185,7 +186,7 @@ class MPLManager implements Serializable {
 			}
 		}
 
-		// finally, run any steps that are registered generally to the module, usually from the jenkinsfile itself
+		// finally, run any steps that are registered generally to the module
 		modulePostStepsRun(name -~ /\(.*\)/)
 	}
 
