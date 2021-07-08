@@ -140,7 +140,8 @@ class MPLManager implements Serializable {
 		}
 		// TODO: Parallel execution - could be dangerous
 		if (!modulePostSteps[name]) modulePostSteps[name] = []
-		final block = Helper.getMPLBlocks()?.first() ?: [module: name, id: modulePostSteps[name].size()]
+		final blocks = Helper.getMPLBlocks()
+		final block = blocks?.any() ?blocks.first() : [module: name, id: modulePostSteps[name].size()]
 		modulePostSteps[name] << [block: block, body: body]
 	}
 
