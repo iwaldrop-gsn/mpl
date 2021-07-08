@@ -140,9 +140,7 @@ class MPLManager implements Serializable {
 		}
 		// TODO: Parallel execution - could be dangerous
 		if (!modulePostSteps[name]) modulePostSteps[name] = []
-		final blocks = Helper.getMPLBlocks()
-		final block = blocks?.any() ?blocks.first() : [module: name, id: modulePostSteps[name].size()]
-		modulePostSteps[name] << [block: block, body: body]
+		modulePostSteps[name] << [block: Helper.getMPLBlocks().first(), body: body]
 	}
 
 	/**
@@ -151,19 +149,16 @@ class MPLManager implements Serializable {
 	 * @param name post steps list name
 	 */
 	void postStepsRun(String name = 'always') {
-		if (postSteps[name]) {
-			final configuration = [CFG: globalConfig]
-			for (def i = postSteps[name].size() - 1; i >= 0; i--) {
-				try {
-					Closure body = postSteps[name][i].body
-					body.delegate = configuration
-					body.resolveStrategy = Closure.DELEGATE_FIRST
-					body.call()
-				}
-				catch (ex) {
-					def module_name = "${postSteps[name][i].block?.module}(${postSteps[name][i].block?.id})"
-					postStepError(name, module_name, ex)
-				}
+		postSteps[name]?.reverse()?.each {
+			try {
+				Closure body = it.body
+				body.delegate = configuration
+				body.resolveStrategy = Closure.DELEGATE_FIRST
+				body.call()
+			}
+			catch (ex) {
+				def module_name = "${it.block?.module}(${it.block?.id})"
+				postStepError(name, module_name, ex)
 			}
 		}
 	}
@@ -186,10 +181,6 @@ class MPLManager implements Serializable {
 				postStepError(name, module_name, ex)
 			}
 		}
-
-		// finally, run any steps that are registered generally to the module
-		// check and remove pattern to prevent unbounded recursion
-		if (name ==~ /.*\(.*\)/) modulePostStepsRun(name -~ /\(.*\)/)
 	}
 
 	/**
