@@ -149,6 +149,7 @@ class MPLManager implements Serializable {
 	 * @param name post steps list name
 	 */
 	void postStepsRun(String name = 'always') {
+		final configuration = [CFG: globalConfig]
 		postSteps[name]?.reverse()?.each {
 			try {
 				Closure body = it.body
