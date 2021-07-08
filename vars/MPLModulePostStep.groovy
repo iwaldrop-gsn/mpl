@@ -30,6 +30,6 @@ import com.griddynamics.devops.mpl.MPLManager
  * @param body Definition of steps to execute
  * @see MPLManager#modulePostStep(String name, Closure body)
  */
-def call(Closure body) {
-	MPLManager.instance.modulePostStep(null, body)
+def call(String name = null, Closure body) {
+	MPLManager.instance.modulePostStep(name, body)
 }

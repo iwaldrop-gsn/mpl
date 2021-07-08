@@ -176,17 +176,17 @@ class MPLManager implements Serializable {
 			def block = Helper.getMPLBlocks().first()
 			name = "${block.module}(${block.id})"
 		}
-		if (modulePostSteps[name]) {
-			for (def i = modulePostSteps[name].size() - 1; i >= 0; i--) {
-				try {
-					modulePostSteps[name][i].body()
-				}
-				catch (ex) {
-					def module_name = "${modulePostSteps[name][i].block?.module}(${modulePostSteps[name][i].block?.id})"
-					postStepError(name, module_name, ex)
-				}
+
+		modulePostSteps[name]?.reverse()?.each {
+			try { it.body() }
+			catch (ex) {
+				def module_name = "${it.block?.module}(${it.block?.id})"
+				postStepError(name, module_name, ex)
 			}
 		}
+
+		// finally, run any steps that are registered generally to the module, usually from the jenkinsfile itself
+		modulePostStepsRun(name -~ /\(.*\)/)
 	}
 
 	/**
