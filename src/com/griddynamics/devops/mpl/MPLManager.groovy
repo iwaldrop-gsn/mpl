@@ -188,7 +188,9 @@ class MPLManager implements Serializable {
 		}
 
 		// finally, run any steps that are registered generally to the module
-		modulePostStepsRun(name -~ /\(.*\)/)
+		// check and remove pattern to prevent unbounded recursion
+		final pattern = /\(.*\)/
+		if (name ==~ pattern) modulePostStepsRun(name -~ pattern)
 	}
 
 	/**
