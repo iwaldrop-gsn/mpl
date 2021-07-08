@@ -27,6 +27,10 @@ import com.griddynamics.devops.mpl.MPLModuleException
 
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 
+def call(String name = env.STAGE_NAME, Closure closure) {
+	call(name, Helper.configFromClosure(closure))
+}
+
 /**
  * Finding module implementation and executing it with specified configuration
  *
