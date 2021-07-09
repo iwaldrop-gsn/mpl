@@ -160,15 +160,15 @@ class MPLManager implements Serializable {
 			def block = Helper.getMPLBlocks().first()
 			name = "${block.module}(${block.id})"
 		}
-		executePostSteps(modulePostSteps[name], name)
+		final configuration = [CFG: moduleConfig(name)]
+		executePostSteps(modulePostSteps[name], name, configuration)
 	}
 
-	private void executePostSteps(steps, name) {
-		final configuration = [CFG: globalConfig]
+	private void executePostSteps(steps, name, configuration = null) {
 		steps?.reverse()?.each {
 			try {
 				Closure body = it.body
-				body.delegate = configuration
+				body.delegate = configuration ?: globalConfig
 				body.resolveStrategy = Closure.DELEGATE_FIRST
 				body.call()
 			}
