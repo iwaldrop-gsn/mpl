@@ -148,7 +148,7 @@ class MPLManager implements Serializable {
 	 *
 	 * @param name post steps list name
 	 */
-	void postStepsRun(String name) { executePostSteps(postSteps[name]) }
+	void postStepsRun(String name) { executePostSteps(postSteps[name], name) }
 
 	/**
 	 * Execute module post steps filled by module in reverse order
@@ -160,10 +160,10 @@ class MPLManager implements Serializable {
 			def block = Helper.getMPLBlocks().first()
 			name = "${block.module}(${block.id})"
 		}
-		executePostSteps(modulePostSteps[name])
+		executePostSteps(modulePostSteps[name], name)
 	}
 
-	private void executePostSteps(steps) {
+	private void executePostSteps(steps, name) {
 		final configuration = [CFG: globalConfig]
 		steps?.reverse()?.each {
 			try {
