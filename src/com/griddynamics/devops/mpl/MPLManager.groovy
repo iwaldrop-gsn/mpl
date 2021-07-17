@@ -156,8 +156,8 @@ class MPLManager implements Serializable {
 	 * @param name Module post steps list name (default: current "module(id)")
 	 */
 	void modulePostStepsRun(Map cfg) {
-		def block = Helper.getMPLBlocks().first()
-		name = "${block.module}(${block.id})"
+		final block = Helper.getMPLBlocks().first()
+		final name = "${block.module}(${block.id})"
 		executePostSteps(modulePostSteps[name], name, cfg)
 	}
 
