@@ -155,10 +155,13 @@ class MPLManager implements Serializable {
 	 *
 	 * @param name Module post steps list name (default: current "module(id)")
 	 */
-	void modulePostStepsRun(Map cfg) {
-		final block = Helper.getMPLBlocks().first()
-		final name = "${block.module}(${block.id})"
-		executePostSteps(modulePostSteps[name], name, cfg)
+	void modulePostStepsRun(String name = null) {
+		if (name == null) {
+			def block = Helper.getMPLBlocks().first()
+			name = "${block.module}(${block.id})"
+		}
+		final configuration = [CFG: moduleConfig(name)]
+		executePostSteps(modulePostSteps[name], name, configuration)
 	}
 
 	private void executePostSteps(steps, name, configuration = null) {
@@ -200,7 +203,7 @@ class MPLManager implements Serializable {
 			def block = Helper.getMPLBlocks().first()
 			name = "${block.module}(${block.id})"
 		}
-		postStepsErrors[name] as List ?: []
+		postStepsErrors[name] ?: []
 	}
 
 
