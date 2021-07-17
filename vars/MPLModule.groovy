@@ -95,7 +95,7 @@ def call(String name = env.STAGE_NAME, Map cfg = null) {
 	}
 	finally {
 		if (out.any()) MPLManager.instance.configMerge(out)
-		MPLManager.instance.modulePostStepsRun()
+		MPLManager.instance.modulePostStepsRun(cfg)
 		def errors = MPLManager.instance.getPostStepsErrors()
 		if (errors) {
 			for (def e in errors)
