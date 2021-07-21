@@ -27,12 +27,22 @@ import com.griddynamics.devops.mpl.MPLManager
  * Run the poststep list in reverse direction
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
- * @param name  List name
+ * @param name List name
  * @see MPLManager#postStepsRun(String name)
  */
 def call(String name) {
-  MPLManager.instance.postStepsRun(name)
-  def errors = MPLManager.instance.getPostStepsErrors(name)
-  for( int e in errors )
-    println "PostStep '${name}' error: ${e.module}: ${e.error}"
+	MPLManager.instance.postStepsRun(name)
+	MPLManager.instance.getPostStepsErrors(name)
+		.each { println "PostStep '${name}' error: ${it.module}: ${it.error}" }
+}
+
+/**
+ * A helper to run the default set to post steps for the given state of the build; e.g. 'always' is always run,
+ * then the `currentBuild.result` value is used to call either `success`, `unstable`, or `failure` steps.
+ *
+ * @author Ian Waldrop <iwaldrop@gsngames.com>
+ */
+def call() {
+	call('always')
+	if (currentBuild.result) call(currentBuild.result.toLowerCase())
 }

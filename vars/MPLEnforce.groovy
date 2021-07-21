@@ -27,8 +27,8 @@ import com.griddynamics.devops.mpl.MPLManager
  * Enables enforced mode of the MPL library
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
- * @param modules  Module names available to be overriden on the project level
+ * @param modules Module names available to be overriden on the project level
  */
 def call(List modules) {
-  MPLManager.instance.enforce(modules)
+	MPLManager.instance.enforce(modules)
 }

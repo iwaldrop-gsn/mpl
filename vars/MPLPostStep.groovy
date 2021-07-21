@@ -27,14 +27,14 @@ import com.griddynamics.devops.mpl.MPLManager
  * Add poststeps block to the list
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
- * @param name  List name
+ * @param name List name
  *              Usual poststeps list names:
  *                - always:  used to run poststeps anyway (ex: decomission of the dynamic environment)
  *                - success: poststeps to run on pipeline success (ex: email with congratulations or ask for promotion)
  *                - failure: poststeps to run on pipeline failure (ex: pipeline failed message)
- * @param body  Definition of steps to execute
+ * @param body Definition of steps to execute
  * @see MPLManager#postStep(String name, Closure body)
  */
 def call(String name, Closure body) {
-  MPLManager.instance.postStep(name, body)
+	MPLManager.instance.postStep(name, body)
 }

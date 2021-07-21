@@ -23,10 +23,12 @@
 
 package com.griddynamics.devops.mpl
 
+import groovy.transform.InheritConstructors
+
 /**
  * Exception to handle module execution errors
  *
  * @author Sergei Parshev <sparshev@griddynamics.com>
  */
-@groovy.transform.InheritConstructors
+@InheritConstructors
 class MPLException extends RuntimeException {}

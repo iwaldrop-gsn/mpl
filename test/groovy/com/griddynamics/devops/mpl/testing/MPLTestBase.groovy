@@ -27,7 +27,6 @@ import org.junit.AfterClass
 import org.junit.Before
 import com.lesfurets.jenkins.unit.BasePipelineTest
 
-import com.griddynamics.devops.mpl.MPLConfig
 import com.griddynamics.devops.mpl.MPLManager
 import com.griddynamics.devops.mpl.Helper
 
