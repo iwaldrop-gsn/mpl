@@ -43,7 +43,7 @@ def call(String name = env.STAGE_NAME, Closure closure) {
  * @param name used to determine the module name, by default it's current stage name (ex. "Maven Build")
  * @param cfg module configuration to override. Will update the common module configuration
  *
- * @return Map object was available in the module as `OUT`
+ * @return Map object assigned in the module as `OUT`
  */
 def call(String name = env.STAGE_NAME, Map cfg = null) {
 	if (cfg == null) cfg = MPLManager.instance.moduleConfig(name)
