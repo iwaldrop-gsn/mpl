@@ -44,5 +44,5 @@ def call(String name) {
  */
 def call() {
 	call('always')
-	if (currentBuild.result) call(currentBuild.result.toLowerCase())
+	call(currentBuild.currentResult.toLowerCase())
 }
